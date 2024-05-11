@@ -1,14 +1,13 @@
-from api.Yandex import YandexAPI
 from File_synchronizer import Synchronizer
 import logging
 import threading
 import os
-from misc.instruments import load_config, check_directory
+from misc.instruments import load_config, check_directory, check_cloud_service_config
 
 
-def loop(done_param, token, folder, directory, interval=1):
+def loop(done_param, token, folder, directory, service_object, interval=1):
     while not done_param.wait(interval):
-        Synchronizer(YandexAPI(token, folder), directory).synchronise()
+        Synchronizer(service_object(token, folder), directory).synchronise()
 
 
 if __name__ == '__main__':
@@ -20,6 +19,7 @@ if __name__ == '__main__':
 
     config = load_config()
     check_directory(config['PARAMS']['local_folder'])
+    service_class = check_cloud_service_config(config['SERVICE']['service_type'])
     done = threading.Event()
     logging.info('Запуск программы')
     logging.info(f'Директория для отслеживания: {config["PARAMS"]["local_folder"]}')
@@ -29,6 +29,8 @@ if __name__ == '__main__':
                                         config['SERVICE']['service_token'],
                                         config['PARAMS']['service_folder'],
                                         config['PARAMS']['local_folder'],
-                                        int(config['PARAMS']['sync_interval'])], daemon=True).start()
+                                        service_class,
+                                        int(config['PARAMS']['sync_interval'])],
+                     daemon=True).start()
     input('Press Enter to exit.')
     done.set()

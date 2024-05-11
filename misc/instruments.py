@@ -1,6 +1,7 @@
 from exceptions.SystemExceptions import *
 import configparser
 import os
+from api.Yandex import YandexAPI
 
 
 def load_config():
@@ -30,5 +31,15 @@ def check_directory(directory):
     try:
         if not os.path.exists(directory):
             raise NotExistsDirectoryError(directory)
+    except Exception as ex:
+        exit(f'Невозможно начать работу: {ex}')
+
+
+def check_cloud_service_config(service_id):
+    try:
+        if service_id == 'YandexDrive':
+            return YandexAPI
+        else:
+            raise NotGoodINIError
     except Exception as ex:
         exit(f'Невозможно начать работу: {ex}')
