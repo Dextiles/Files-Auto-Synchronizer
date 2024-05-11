@@ -17,7 +17,7 @@ class NotExistsDirectoryError(Exception):
             self.message = None
 
     def __str__(self):
-        return 'Directory not found'
+        return f'Directory {self.message} not found'
 
 
 class NotGoodINIError(Exception):
