@@ -1,0 +1,8 @@
+[SERVICE]
+service_token = # Ваш токен
+service_type = YandexDrive # Тип хранилища
+
+[PARAMS]
+local_folder = # Путь к отслеживаемой папке
+service_folder = # Название папки в удаленном хранилище
+sync_interval = 1 #Интервал обновления
