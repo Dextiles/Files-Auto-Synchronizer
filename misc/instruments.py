@@ -10,17 +10,16 @@ def load_config():
             raise InIEmptyError
         else:
             cfg = configparser.ConfigParser()
-            with open('config.ini') as cf:
-                cfg.read_file(cf)
-                if not cfg.has_section('PARAMS') or not cfg.has_section('SERVICE'):
+            cfg.read('config.ini')
+            if not cfg.has_section('PARAMS') or not cfg.has_section('SERVICE'):
+                raise NotGoodINIError
+            else:
+                params = cfg.options('PARAMS')
+                service = cfg.options('SERVICE')
+                if 'local_folder' not in params and 'service_folder' not in params and 'sync_interval' not in params:
                     raise NotGoodINIError
-                else:
-                    params = cfg.options('PARAMS')
-                    service = cfg.options('SERVICE')
-                    if 'local_folder' not in params and 'service_folder' not in params and 'sync_interval' not in params:
-                        raise NotGoodINIError
-                    elif 'service_token' not in service and 'service_type' not in service:
-                        raise NotGoodINIError
+                elif 'service_token' not in service and 'service_type' not in service:
+                    raise NotGoodINIError
     except Exception as ex:
         exit(f'Невозможно начать работу: {ex}')
     else:
